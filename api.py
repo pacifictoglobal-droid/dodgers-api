@@ -6,7 +6,8 @@ Endpoints mirror dodgers_engine functions as REST API
 
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Optional
 import tempfile
@@ -70,6 +71,9 @@ class PlayerRequest(BaseModel):
 
 @app.get("/")
 def root():
+    html_path = os.path.join(os.path.dirname(__file__), "index.html")
+    if os.path.exists(html_path):
+        return HTMLResponse(open(html_path, "r", encoding="utf-8").read())
     return {
         "service": "Dodgers Insider API",
         "version": "2.1.0",
