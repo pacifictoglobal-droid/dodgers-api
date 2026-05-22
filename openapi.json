@@ -1,0 +1,403 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Dodgers Insider API",
+        "description": "Los Angeles Dodgers real-time stats, schedules, standings, player profiles, and Sabermetrics. Free, powered by MLB official Stats API.",
+        "version": "2.1.0"
+    },
+    "paths": {
+        "/": {
+            "get": {
+                "summary": "Root",
+                "operationId": "root__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/schedule": {
+            "get": {
+                "summary": "Schedule",
+                "description": "Today's Dodgers game schedule.",
+                "operationId": "schedule_schedule_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/schedule/recent": {
+            "get": {
+                "summary": "Recent Schedule",
+                "description": "Recent Dodgers game results.",
+                "operationId": "recent_schedule_schedule_recent_get",
+                "parameters": [
+                    {
+                        "name": "days",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 30,
+                            "minimum": 1,
+                            "description": "Number of past days",
+                            "default": 7,
+                            "title": "Days"
+                        },
+                        "description": "Number of past days"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/standings": {
+            "get": {
+                "summary": "Standings",
+                "description": "NL West division standings.",
+                "operationId": "standings_standings_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/roster": {
+            "get": {
+                "summary": "Roster",
+                "description": "Current active 26-man roster.",
+                "operationId": "roster_roster_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/roster/batting": {
+            "get": {
+                "summary": "Batting Stats",
+                "description": "Position player batting stats sorted by OPS.",
+                "operationId": "batting_stats_roster_batting_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/roster/pitching": {
+            "get": {
+                "summary": "Pitching Stats",
+                "description": "Pitcher stats sorted by ERA.",
+                "operationId": "pitching_stats_roster_pitching_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/player/{name_or_id}": {
+            "get": {
+                "summary": "Player Profile",
+                "description": "Player profile by name or MLB ID. Returns structured JSON.",
+                "operationId": "player_profile_player__name_or_id__get",
+                "parameters": [
+                    {
+                        "name": "name_or_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Name Or Id"
+                        }
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "description": "Output language",
+                            "enum": [
+                                "en",
+                                "zh"
+                            ],
+                            "default": "en",
+                            "title": "Lang"
+                        },
+                        "description": "Output language"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/report": {
+            "get": {
+                "summary": "Daily Report",
+                "description": "Full daily report with schedule, standings, stats, and news.",
+                "operationId": "daily_report_report_get",
+                "parameters": [
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "description": "Output language",
+                            "enum": [
+                                "en",
+                                "zh"
+                            ],
+                            "default": "en",
+                            "title": "Lang"
+                        },
+                        "description": "Output language"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/report/advanced": {
+            "get": {
+                "summary": "Advanced Report",
+                "description": "Sabermetrics advanced analysis report.",
+                "operationId": "advanced_report_report_advanced_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/news": {
+            "get": {
+                "summary": "News",
+                "description": "Latest Dodgers news from MLB.com RSS.",
+                "operationId": "news_news_get",
+                "parameters": [
+                    {
+                        "name": "count",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 20,
+                            "minimum": 1,
+                            "description": "Number of news items",
+                            "default": 5,
+                            "title": "Count"
+                        },
+                        "description": "Number of news items"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/poster": {
+            "get": {
+                "summary": "Poster",
+                "description": "Generate Dodgers daily report poster (1080x1920 PNG).",
+                "operationId": "poster_poster_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "summary": "Health",
+                "operationId": "health_health_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    },
+                    "input": {
+                        "title": "Input"
+                    },
+                    "ctx": {
+                        "type": "object",
+                        "title": "Context"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        }
+    }
+}
