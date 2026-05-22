@@ -4,13 +4,15 @@ GPT Store Actions ready
 Endpoints mirror dodgers_engine functions as REST API
 """
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
 from typing import Optional
 import tempfile
 import os
+import time
+from collections import defaultdict
 
 app = FastAPI(
     title="Dodgers Insider API",
@@ -26,6 +28,36 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# ==================== RATE LIMITING ====================
+
+_rate_store = defaultdict(list)
+RATE_LIMIT = 30       # max requests per window
+RATE_WINDOW = 60     # seconds per window
+
+def _get_client_ip(request: Request) -> str:
+    forwarded = request.headers.get("x-forwarded-for")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
+
+@app.middleware("http")
+async def rate_limit_middleware(request: Request, call_next):
+    ip = _get_client_ip(request)
+    now = time.time()
+    # Clean old entries
+    _rate_store[ip] = [t for t in _rate_store[ip] if now - t < RATE_WINDOW]
+    if len(_rate_store[ip]) >= RATE_LIMIT:
+        return JSONResponse(
+            status_code=429,
+            content={"error": "Rate limit exceeded", "limit": RATE_LIMIT, "window": f"{RATE_WINDOW}s"},
+        )
+    _rate_store[ip].append(now)
+    response = await call_next(request)
+    response.headers["X-RateLimit-Limit"] = str(RATE_LIMIT)
+    response.headers["X-RateLimit-Remaining"] = str(RATE_LIMIT - len(_rate_store[ip]))
+    return response
 
 
 # ==================== MODELS ====================
