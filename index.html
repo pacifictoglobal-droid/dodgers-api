@@ -4,158 +4,123 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dodgers Insider | 洛杉矶道奇队实时资讯</title>
-<meta name="description" content="洛杉矶道奇队实时赛况、阵容数据、球员档案、进阶分析。基于MLB官方数据，免费且实时更新。">
+<meta name="description" content="Los Angeles Dodgers real-time stats, roster, player profiles, Sabermetrics. Free, powered by MLB Stats API.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚾</text></svg>">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
   --blue:#005A9C;--blue-dark:#003B6F;--blue-light:#E6F1FB;--blue-50:#F0F6FC;
   --red:#CC0000;--red-light:#FAEAEA;
-  --gold:#E8A525;--gold-light:#FFF8E7;
   --green:#2D8B46;--green-light:#E8F5EC;
-  --gray-50:#FAFAFA;--gray-100:#F5F5F5;--gray-200:#E8E8E8;--gray-300:#D0D0D0;
-  --gray-500:#888;--gray-600:#666;--gray-700:#444;--gray-800:#222;
-  --radius:10px;--shadow:0 1px 3px rgba(0,0,0,0.08);
+  --gold:#D4A017;--gold-light:#FFF8E7;
+  --gray-50:#F8F9FA;--gray-100:#F0F1F3;--gray-200:#E0E2E6;--gray-300:#C8CBCF;
+  --gray-500:#888;--gray-600:#666;--gray-700:#444;--gray-800:#1a1a1a;
+  --radius:10px;--shadow:0 1px 3px rgba(0,0,0,0.06);
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--gray-50);color:var(--gray-800);line-height:1.6;min-height:100vh}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,sans-serif;background:var(--gray-50);color:var(--gray-800);line-height:1.6;-webkit-font-smoothing:antialiased}
 a{color:var(--blue);text-decoration:none}
+img{max-width:100%}
 
-/* Header */
-.header{background:var(--blue);color:#fff;padding:16px 20px;position:sticky;top:0;z-index:100}
+.header{background:var(--blue);color:#fff;padding:14px 20px;position:sticky;top:0;z-index:100}
 .header-inner{max-width:800px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
-.header h1{font-size:20px;font-weight:700;letter-spacing:-0.5px}
-.header h1 span{color:var(--gold)}
-.header .version{font-size:11px;background:rgba(255,255,255,0.15);padding:2px 8px;border-radius:20px}
+.header h1{font-size:18px;font-weight:700;letter-spacing:-0.3px}
+.header h1 em{font-style:normal;color:var(--gold)}
+.header .tag{font-size:10px;background:rgba(255,255,255,0.18);padding:2px 8px;border-radius:12px;font-weight:400}
 
-/* Nav */
-.nav{background:#fff;border-bottom:1px solid var(--gray-200);overflow-x:auto;-webkit-overflow-scrolling:touch;position:sticky;top:56px;z-index:99}
+.nav{background:#fff;border-bottom:1px solid var(--gray-200);overflow-x:auto;-webkit-overflow-scrolling:touch;position:sticky;top:50px;z-index:99;scrollbar-width:none}
 .nav::-webkit-scrollbar{display:none}
-.nav-inner{max-width:800px;margin:0 auto;display:flex;gap:0;padding:0 12px}
-.nav button{flex-shrink:0;padding:12px 16px;font-size:13px;font-weight:500;border:none;background:none;color:var(--gray-500);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap}
+.nav-inner{max-width:800px;margin:0 auto;display:flex;padding:0 8px}
+.nav button{flex-shrink:0;padding:12px 14px;font-size:13px;font-weight:500;border:none;background:none;color:var(--gray-500);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
 .nav button:hover{color:var(--blue)}
 .nav button.active{color:var(--blue);border-bottom-color:var(--blue)}
 
-/* Main */
-.main{max-width:800px;margin:0 auto;padding:16px 16px 80px}
+.main{max-width:800px;margin:0 auto;padding:12px 12px 60px}
+.tab{display:none}.tab.active{display:block}
 
-/* Tab content */
-.tab{display:none}
-.tab.active{display:block}
+.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden}
+.card-head{padding:13px 16px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--gray-100)}
+.card-body{padding:14px 16px}
 
-/* Section */
-.section{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden}
-.section-header{padding:14px 16px;font-size:15px;font-weight:600;color:var(--gray-800);display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--gray-100)}
-.section-body{padding:16px}
+/* Game */
+.game{padding:16px;display:flex;align-items:center;gap:8px}
+.game-team{text-align:center;flex:1;min-width:0}
+.game-team .name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.game-score{text-align:center;padding:0 12px;flex-shrink:0}
+.game-score .runs{font-size:26px;font-weight:800;font-family:'SF Mono',Monaco,'Cascadia Code',monospace}
+.game-score .at{color:var(--gray-300);font-size:20px;margin:0 2px}
+.game-meta{text-align:center;flex-shrink:0;min-width:70px}
+.game-meta .status{font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px;display:inline-block}
+.s-live{background:var(--red);color:#fff;animation:pulse 2s infinite}
+.s-sched{background:var(--blue-light);color:var(--blue)}
+.s-final{background:var(--gray-100);color:var(--gray-600)}
+.s-win{background:var(--green-light);color:var(--green)}
+.s-loss{background:var(--red-light);color:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+.game-meta .time{font-size:11px;color:var(--gray-500);margin-top:4px}
+.game .dodgers-highlight .name{color:var(--blue)}
 
-/* Cards */
-.card{padding:14px 16px;border-bottom:1px solid var(--gray-100)}
-.card:last-child{border-bottom:none}
-.card-row{display:flex;justify-content:space-between;align-items:center}
-.card-label{font-size:13px;color:var(--gray-500)}
-.card-value{font-size:15px;font-weight:600}
-.card-sub{font-size:12px;color:var(--gray-500);margin-top:2px}
-
-/* Game card */
-.game-card{padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.game-score{display:flex;align-items:center;gap:16px;flex:1}
-.game-team{text-align:center;flex:1}
-.game-team .name{font-size:14px;font-weight:600}
-.game-team .record{font-size:11px;color:var(--gray-500)}
-.game-vs{font-size:16px;font-weight:700;color:var(--gray-300)}
-.game-info{text-align:center;flex-shrink:0;min-width:80px}
-.game-info .status{font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;display:inline-block}
-.status-live{background:var(--red);color:#fff}
-.status-upcoming{background:var(--blue-light);color:var(--blue)}
-.status-final{background:var(--gray-100);color:var(--gray-600)}
-.game-info .time{font-size:12px;color:var(--gray-500);margin-top:4px}
-
-/* Standings table */
-.standings-table{width:100%;font-size:13px;border-collapse:collapse}
-.standings-table th{text-align:left;padding:8px 12px;font-weight:600;color:var(--gray-500);font-size:12px;text-transform:uppercase;letter-spacing:0.5px;background:var(--gray-50)}
-.standings-table td{padding:10px 12px;border-top:1px solid var(--gray-100)}
-.standings-table tr.dodgers{background:var(--blue-light);font-weight:600}
-.standings-table .rank{width:32px;text-align:center}
-.standings-table .team-logo{font-size:18px;margin-right:6px}
-.standings-table .gb{color:var(--red);font-weight:600;font-size:12px}
+/* Standings text */
+.standings-pre{font-family:'SF Mono',Monaco,'Cascadia Code','Courier New',monospace;font-size:12px;line-height:1.7;white-space:pre-wrap;color:var(--gray-700);padding:4px 0}
 
 /* Roster */
-.roster-tabs{display:flex;gap:8px;padding:12px 16px;background:var(--gray-50)}
-.roster-tabs button{padding:6px 16px;font-size:13px;border:1px solid var(--gray-200);border-radius:20px;background:#fff;color:var(--gray-600);cursor:pointer;font-weight:500}
-.roster-tabs button.active{background:var(--blue);color:#fff;border-color:var(--blue)}
-.player-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--gray-100);cursor:pointer;transition:background 0.15s}
-.player-row:hover{background:var(--gray-50)}
+.roster-filters{display:flex;gap:6px;padding:10px 16px;background:var(--gray-50);border-bottom:1px solid var(--gray-100)}
+.roster-filters button{padding:5px 14px;font-size:12px;border:1px solid var(--gray-200);border-radius:16px;background:#fff;color:var(--gray-600);cursor:pointer;font-weight:500;transition:all .15s}
+.roster-filters button.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.player-row{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--gray-100);cursor:pointer;transition:background .1s}
+.player-row:hover{background:var(--blue-50)}
 .player-row:last-child{border-bottom:none}
-.player-num{font-size:14px;font-weight:700;color:var(--blue);width:28px;text-align:center}
+.player-num{font-size:13px;font-weight:700;color:var(--blue);width:24px;text-align:center;font-family:'SF Mono',Monaco,monospace}
 .player-info{flex:1;min-width:0}
 .player-name{font-size:14px;font-weight:600}
-.player-pos{font-size:12px;color:var(--gray-500)}
-.player-stat{text-align:right;font-size:13px;font-weight:500;color:var(--gray-700);font-family:'SF Mono',Monaco,monospace}
-
-/* Search */
-.search-box{padding:12px 16px}
-.search-input{width:100%;padding:10px 16px;border:1px solid var(--gray-200);border-radius:24px;font-size:14px;outline:none;transition:border 0.2s}
-.search-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-light)}
+.player-meta{font-size:11px;color:var(--gray-500);margin-top:1px}
+.player-stat{font-size:13px;font-weight:600;color:var(--gray-700);font-family:'SF Mono',Monaco,monospace}
 
 /* Profile */
-.profile-header{padding:20px 16px;text-align:center;background:var(--blue);color:#fff}
-.profile-header .name{font-size:22px;font-weight:700;margin-top:8px}
-.profile-header .team{font-size:14px;opacity:0.85;margin-top:2px}
-.profile-header .number{font-size:40px;font-weight:800;opacity:0.2;position:absolute;top:12px;left:16px}
+.profile-hero{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-dark) 100%);color:#fff;padding:24px 16px 20px;text-align:center;position:relative}
+.profile-hero .num{position:absolute;top:8px;right:16px;font-size:48px;font-weight:900;opacity:.12;font-family:'SF Mono',monospace}
+.profile-hero .pname{font-size:24px;font-weight:700;margin-top:4px}
+.profile-hero .pteam{font-size:13px;opacity:.8;margin-top:2px}
 .profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--gray-200)}
-.profile-item{background:#fff;padding:14px 16px}
-.profile-item .label{font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
-.profile-item .value{font-size:15px;font-weight:600}
-.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--gray-200)}
-.profile-stat{text-align:center;background:#fff;padding:12px 8px}
-.profile-stat .num{font-size:18px;font-weight:700;color:var(--blue)}
-.profile-stat .tag{font-size:11px;color:var(--gray-500);margin-top:2px}
+.profile-cell{background:#fff;padding:12px 14px}
+.profile-cell .lbl{font-size:10px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.profile-cell .val{font-size:14px;font-weight:600}
+.profile-stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--gray-200)}
+.profile-stat{text-align:center;background:#fff;padding:10px 6px}
+.profile-stat .n{font-size:18px;font-weight:700;color:var(--blue);font-family:'SF Mono',monospace}
+.profile-stat .t{font-size:10px;color:var(--gray-500);margin-top:2px}
 
-/* Sabermetrics */
-.saber-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.saber-card{background:var(--gray-50);border-radius:8px;padding:14px;text-align:center}
-.saber-card .metric{font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:0.3px}
-.saber-card .val{font-size:22px;font-weight:700;color:var(--blue);margin:4px 0}
-.saber-card .desc{font-size:11px;color:var(--gray-500)}
-.saber-card.good .val{color:var(--green)}
-.saber-card.bad .val{color:var(--red)}
-.saber-card.great .val{color:var(--gold)}
+/* Search */
+.search-wrap{padding:10px 16px}
+.search-input{width:100%;padding:10px 16px;border:1px solid var(--gray-200);border-radius:20px;font-size:14px;outline:none;transition:border .2s;background:#fff}
+.search-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,90,156,.1)}
 
 /* News */
-.news-item{padding:14px 16px;border-bottom:1px solid var(--gray-100);display:flex;gap:12px;cursor:pointer}
-.news-item:hover{background:var(--gray-50)}
-.news-item:last-child{border-bottom:none}
-.news-dot{width:8px;height:8px;border-radius:50%;background:var(--blue);margin-top:6px;flex-shrink:0}
-.news-content{flex:1}
-.news-title{font-size:14px;font-weight:600;line-height:1.4}
-.news-time{font-size:12px;color:var(--gray-500);margin-top:4px}
+.news-row{padding:12px 16px;border-bottom:1px solid var(--gray-100);display:block;text-decoration:none;color:inherit}
+.news-row:hover{background:var(--blue-50)}
+.news-row:last-child{border-bottom:none}
+.news-title{font-size:13px;font-weight:600;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.news-date{font-size:11px;color:var(--gray-500);margin-top:3px}
 
 /* Loading */
-.loading{text-align:center;padding:40px 20px;color:var(--gray-500);font-size:14px}
-.spinner{width:32px;height:32px;border:3px solid var(--gray-200);border-top-color:var(--blue);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px}
+.loading{text-align:center;padding:48px 20px;color:var(--gray-500);font-size:13px}
+.spinner{width:28px;height:28px;border:3px solid var(--gray-200);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* Empty */
-.empty{text-align:center;padding:40px 20px;color:var(--gray-500)}
-.empty .icon{font-size:40px;margin-bottom:12px}
+.err{text-align:center;padding:20px 16px;background:var(--red-light);border-radius:var(--radius);margin:8px 0;font-size:13px;color:#a33}
 
-/* Error */
-.error{text-align:center;padding:24px 16px;background:var(--red-light);border-radius:var(--radius);margin:12px 16px;font-size:13px;color:var(--red)}
+.empty{text-align:center;padding:40px 20px;color:var(--gray-500);font-size:13px}
+.empty-icon{font-size:36px;margin-bottom:8px;opacity:.5}
 
-/* Back btn */
-.back-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;font-size:13px;color:var(--blue);cursor:pointer;border:none;background:none;font-weight:500}
-.back-btn:hover{text-decoration:underline}
+.back-btn{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;font-size:13px;color:var(--blue);cursor:pointer;border:none;background:none;font-weight:500;border-radius:6px}
+.back-btn:hover{background:var(--blue-50)}
 
-/* Footer */
-.footer{text-align:center;padding:20px;font-size:12px;color:var(--gray-500)}
-.footer a{color:var(--blue)}
+.text-report{font-family:'SF Mono',Monaco,'Cascadia Code','Courier New',monospace;font-size:12px;line-height:1.8;white-space:pre-wrap;color:var(--gray-700)}
 
-/* Poster */
-.poster-container{text-align:center;padding:16px}
-.poster-container img{max-width:100%;border-radius:8px;box-shadow:var(--shadow)}
+.footer{text-align:center;padding:20px 16px;font-size:11px;color:var(--gray-500)}
+.footer a{color:var(--blue);font-weight:500}
 
-/* Responsive */
 @media(min-width:600px){
-  .saber-grid{grid-template-columns:repeat(3,1fr)}
-  .profile-stats{grid-template-columns:repeat(5,1fr)}
+  .profile-stats-bar{grid-template-columns:repeat(5,1fr)}
 }
 </style>
 </head>
@@ -163,8 +128,8 @@ a{color:var(--blue);text-decoration:none}
 
 <div class="header">
   <div class="header-inner">
-    <h1><span>LA</span> Dodgers Insider</h1>
-    <span class="version">v2.1</span>
+    <h1><em>LA</em> Dodgers Insider</h1>
+    <span class="tag">MLB Stats API</span>
   </div>
 </div>
 
@@ -174,472 +139,297 @@ a{color:var(--blue);text-decoration:none}
     <button data-tab="standings">Standings</button>
     <button data-tab="roster">Roster</button>
     <button data-tab="player">Player</button>
-    <button data-tab="saber">Sabermetrics</button>
+    <button data-tab="saber">Saber</button>
     <button data-tab="news">News</button>
   </div>
 </div>
 
 <div class="main">
-  <!-- TODAY -->
   <div class="tab active" id="tab-today"></div>
-
-  <!-- STANDINGS -->
   <div class="tab" id="tab-standings"></div>
-
-  <!-- ROSTER -->
   <div class="tab" id="tab-roster"></div>
-
-  <!-- PLAYER -->
   <div class="tab" id="tab-player"></div>
-
-  <!-- SABERMETRICS -->
   <div class="tab" id="tab-saber"></div>
-
-  <!-- NEWS -->
   <div class="tab" id="tab-news"></div>
 </div>
 
-<div class="footer">
-  Powered by <a href="https://dodgers-api.onrender.com" target="_blank">Dodgers Insider API</a> &middot; MLB Stats API &middot; Free & Open
-</div>
+<div class="footer">Powered by <a href="https://dodgers-api.onrender.com/docs" target="_blank">Dodgers Insider API</a> &middot; Free &amp; Real-time</div>
 
 <script>
-const API = 'https://dodgers-api.onrender.com';
-let currentTab = 'today';
-let rosterView = 'all';
+const API='https://dodgers-api.onrender.com';
+let curTab='today',rosterView='all';
 
-// Tab switching
-document.querySelectorAll('.nav button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    const tabId = btn.dataset.tab;
-    document.getElementById('tab-' + tabId).classList.add('active');
-    currentTab = tabId;
-    loadTab(tabId);
-  });
+document.querySelectorAll('.nav button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    const t=b.dataset.tab;
+    document.getElementById('tab-'+t).classList.add('active');
+    curTab=t; loadTab(t);
+  };
 });
 
-function loadTab(tab) {
-  const el = document.getElementById('tab-' + tab);
-  if (tab === 'today') loadToday(el);
-  else if (tab === 'standings') loadStandings(el);
-  else if (tab === 'roster') loadRoster(el);
-  else if (tab === 'player') initPlayer(el);
-  else if (tab === 'saber') initSaber(el);
-  else if (tab === 'news') loadNews(el);
+function loadTab(t){
+  const el=document.getElementById('tab-'+t);
+  ({today:loadToday,standings:loadStandings,roster:loadRoster,player:initPlayer,saber:initSaber,news:loadNews})[t](el);
 }
 
-function showLoading(el) {
-  el.innerHTML = '<div class="loading"><div class="spinner"></div>Loading data from MLB...</div>';
-}
+function showLoad(el){el.innerHTML='<div class="loading"><div class="spinner"></div>Loading...</div>'}
+function showErr(el,m){el.innerHTML='<div class="err">'+esc(m)+'</div><div style="text-align:center;padding:8px"><button class="back-btn" onclick="loadTab(curTab)">Retry</button></div>'}
+function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=String(s);return d.innerHTML}
 
-function showError(el, msg) {
-  el.innerHTML = `<div class="error">Failed to load: ${msg}<br><small>Please try again later</small></div>`;
-}
+async function api(path){const r=await fetch(API+path);if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}
 
-async function apiCall(path) {
-  const res = await fetch(API + path);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json();
-}
-
-// ==================== TODAY ====================
-async function loadToday(el) {
-  showLoading(el);
-  try {
-    const [scheduleData, reportData] = await Promise.all([
-      apiCall('/schedule'),
-      apiCall('/schedule/recent?days=7').catch(() => ({data:{games:[],record:''}}))
+// ========== TODAY ==========
+async function loadToday(el){
+  showLoad(el);
+  try{
+    const [sched,recent]=await Promise.all([
+      api('/schedule').catch(()=>({data:[]})),
+      api('/schedule/recent?days=7').catch(()=>({data:{games:[],record:''}}))
     ]);
+    let h='';
 
-    let html = '';
-
-    // Today's game
-    const schedule = scheduleData.data || scheduleData;
-    html += '<div class="section"><div class="section-header">Today\'s Game</div>';
-    if (typeof schedule === 'string') {
-      html += `<div class="section-body"><pre style="white-space:pre-wrap;font-size:13px">${escHtml(schedule)}</pre></div>`;
-    } else if (Array.isArray(schedule)) {
-      if (schedule.length === 0) {
-        html += '<div class="section-body"><div class="empty"><div class="icon">⚾</div>No game today. Rest day!</div></div>';
-      } else {
-        schedule.forEach(g => { html += renderGame(g); });
-      }
-    } else {
-      html += `<div class="section-body"><pre style="white-space:pre-wrap;font-size:13px">${escHtml(JSON.stringify(schedule,null,2))}</pre></div>`;
+    const sd=sched.data||sched;
+    h+='<div class="card"><div class="card-head">Today\'s Game</div>';
+    if(!sd||sd.length===0){
+      h+='<div class="card-body"><div class="empty"><div class="empty-icon">⚾</div>No game scheduled today</div></div>';
+    } else if(Array.isArray(sd)){
+      sd.forEach(g=>{h+=renderGame(g)});
+    } else if(typeof sd==='string'){
+      h+='<div class="card-body"><div class="text-report">'+esc(sd)+'</div></div>';
     }
-    html += '</div>';
+    h+='</div>';
 
-    // Recent results
-    const recent = reportData.data || reportData;
-    if (recent.games && recent.games.length > 0) {
-      html += '<div class="section"><div class="section-header">Recent Results</div>';
-      recent.games.forEach(g => { html += renderGame(g); });
-      if (recent.record) {
-        html += `<div class="card" style="text-align:center;font-weight:600;color:var(--blue)">${escHtml(recent.record)}</div>`;
+    const rd=recent.data||recent;
+    if(rd.games&&rd.games.length>0){
+      h+='<div class="card"><div class="card-head">Recent Results</div>';
+      rd.games.forEach(g=>{h+=renderGame(g)});
+      if(rd.record){
+        const rec=typeof rd.record==='object'?`W${rd.record.wins}-L${rd.record.losses} (${(rd.record.win_pct*100).toFixed(1)}%) ${rd.record.streak_text||''}`:String(rd.record);
+        h+='<div class="card-body" style="text-align:center;font-weight:600;color:var(--blue)">'+esc(rec)+'</div>';
       }
-      html += '</div>';
+      h+='</div>';
     }
-
-    el.innerHTML = html;
-  } catch(e) {
-    showError(el, e.message);
-  }
+    el.innerHTML=h;
+  }catch(e){showErr(el,e.message)}
 }
 
-function renderGame(g) {
-  if (typeof g === 'string') return `<div class="card"><pre style="white-space:pre-wrap;font-size:13px">${escHtml(g)}</pre></div>`;
-  if (g.away_team && g.home_team) {
-    const isHome = (g.home_team || '').includes('Dodgers');
-    const awayScore = g.away_score ?? '?';
-    const homeScore = g.home_score ?? '?';
-    const status = g.game_status || g.status || '';
-    const statusClass = status.includes('Live') || status.includes('In Progress') ? 'status-live'
-      : status.includes('Final') || status.includes('Completed') ? 'status-final' : 'status-upcoming';
-    const time = g.game_time || g.time || g.game_date || '';
-    return `<div class="game-card">
-      <div class="game-score">
-        <div class="game-team" style="${!isHome?'color:var(--blue)':''}">
-          <div class="name">${escHtml(g.away_team || '?')}</div>
-        </div>
-        <div style="text-align:center">
-          <span style="font-size:24px;font-weight:700;${isHome?'':'color:var(--blue)'}">${escHtml(String(awayScore))}</span>
-          <span style="margin:0 10px;color:var(--gray-300)">-</span>
-          <span style="font-size:24px;font-weight:700;${isHome?'color:var(--blue)':''}">${escHtml(String(homeScore))}</span>
-        </div>
-        <div class="game-team" style="${isHome?'color:var(--blue)':''}">
-          <div class="name">${escHtml(g.home_team || '?')}</div>
-        </div>
-      </div>
-      <div class="game-info">
-        <div class="status ${statusClass}">${escHtml(status || 'Scheduled')}</div>
-        <div class="time">${escHtml(time)}</div>
-      </div>
+function renderGame(g){
+  if(typeof g==='string') return '<div class="card-body"><div class="text-report">'+esc(g)+'</div></div>';
+  if(g.away_team&&g.home_team){
+    const isH=(g.home_team||'').includes('Dodgers');
+    const aS=g.away_score??'-',hS=g.home_score??'-';
+    const st=g.game_status||g.status||'Scheduled';
+    const dScore=isH?hS:aS, oScore=isH?aS:hS;
+    const won=typeof dScore==='number'&&typeof oScore==='number'&&dScore>oScore;
+    const stClass=st.includes('Live')||st.includes('In Progress')?'s-live':st.includes('Final')||st.includes('Completed')?(won?'s-win':'s-loss'):'s-sched';
+    const time=g.game_time||g.time||g.game_date||'';
+    return `<div class="game">
+      <div class="game-team"><div class="name">${esc(g.away_team)}</div></div>
+      <div class="game-score"><span class="runs">${aS}</span><span class="at">-</span><span class="runs">${hS}</span></div>
+      <div class="game-team${isH?' dodgers-highlight':''}"><div class="name">${esc(g.home_team)}</div></div>
+      <div class="game-meta"><div class="status ${stClass}">${esc(st)}</div><div class="time">${esc(time)}</div></div>
     </div>`;
   }
-  return `<div class="card"><pre style="white-space:pre-wrap;font-size:13px">${escHtml(typeof g==='string'?g:JSON.stringify(g,null,2))}</pre></div>`;
+  return '<div class="card-body"><div class="text-report">'+esc(JSON.stringify(g,null,2))+'</div></div>';
 }
 
-// ==================== STANDINGS ====================
-async function loadStandings(el) {
-  showLoading(el);
-  try {
-    const res = await apiCall('/standings');
-    const data = res.data || res;
-    const standings = data.standings || data;
-    const dodgersRank = data.dodgers_rank || '';
-
-    let html = '<div class="section"><div class="section-header">NL West Standings</div>';
-    if (dodgersRank) {
-      html += `<div class="card" style="background:var(--blue-light);font-weight:600;color:var(--blue);text-align:center">${escHtml(dodgersRank)}</div>`;
-    }
-    if (Array.isArray(standings)) {
-      html += '<div class="card" style="padding:0;overflow-x:auto"><table class="standings-table"><thead><tr>';
-      html += '<th class="rank">#</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th><th>STRK</th></tr></thead><tbody>';
-      standings.forEach((t,i) => {
-        const isDodgers = (t.team || t.Team || '').includes('Dodgers');
-        html += `<tr class="${isDodgers?'dodgers':''}">`;
-        html += `<td class="rank">${i+1}</td>`;
-        html += `<td>${escHtml(t.team || t.Team || '?')}</td>`;
-        html += `<td>${t.w || t.W || '-'}</td>`;
-        html += `<td>${t.l || t.L || '-'}</td>`;
-        html += `<td>${t.pct || t.PCT || t['W-L%'] || '-'}</td>`;
-        html += `<td class="gb">${t.gb || t.GB || '-'}</td>`;
-        html += `<td>${t.strk || t.streak || t.STRK || '-'}</td>`;
-        html += '</tr>';
+// ========== STANDINGS ==========
+async function loadStandings(el){
+  showLoad(el);
+  try{
+    const res=await api('/standings');
+    const d=res.data||res;
+    const raw=d.standings||d;
+    const rank=d.dodgers_rank||'';
+    let h='<div class="card"><div class="card-head">NL West Standings</div>';
+    if(rank) h+='<div class="card-body" style="background:var(--blue-light);font-weight:600;color:var(--blue);text-align:center;font-size:13px">'+esc(rank)+'</div>';
+    if(typeof raw==='string'){
+      h+='<div class="card-body"><div class="standings-pre">'+esc(raw)+'</div></div>';
+    } else if(Array.isArray(raw)){
+      h+='<div class="card-body" style="padding:0;overflow-x:auto"><table style="width:100%;font-size:13px;border-collapse:collapse"><thead><tr>';
+      const cols=Object.keys(raw[0]);
+      cols.forEach(c=>{h+='<th style="text-align:left;padding:8px 10px;font-size:11px;color:var(--gray-500);border-bottom:1px solid var(--gray-200)">'+esc(c)+'</th>'});
+      h+='</tr></thead><tbody>';
+      raw.forEach(r=>{
+        const isDod=(JSON.stringify(r)).includes('Dodgers');
+        h+='<tr style="'+(isDod?'background:var(--blue-light);font-weight:600':'')+'">';
+        cols.forEach(c=>{h+='<td style="padding:8px 10px;border-bottom:1px solid var(--gray-100)">'+esc(String(r[c]??'-'))+'</td>'});
+        h+='</tr>';
       });
-      html += '</tbody></table></div>';
-    } else if (typeof standings === 'string') {
-      html += `<div class="section-body"><pre style="white-space:pre-wrap;font-size:13px">${escHtml(standings)}</pre></div>`;
+      h+='</tbody></table></div>';
     } else {
-      html += `<div class="section-body"><pre style="white-space:pre-wrap;font-size:13px">${escHtml(JSON.stringify(standings,null,2))}</pre></div>`;
+      h+='<div class="card-body"><div class="text-report">'+esc(JSON.stringify(raw,null,2))+'</div></div>';
     }
-    html += '</div>';
-    el.innerHTML = html;
-  } catch(e) {
-    showError(el, e.message);
-  }
+    h+='</div>';
+    el.innerHTML=h;
+  }catch(e){showErr(el,e.message)}
 }
 
-// ==================== ROSTER ====================
-async function loadRoster(el, view) {
-  showLoading(el);
-  view = view || rosterView;
-  try {
+// ========== ROSTER ==========
+async function loadRoster(el,view){
+  showLoad(el); view=view||rosterView;
+  try{
     let data;
-    if (view === 'all') {
-      const res = await apiCall('/roster');
-      data = res.data || res;
-    } else if (view === 'batting') {
-      const res = await apiCall('/roster/batting');
-      data = res.data || res;
-    } else {
-      const res = await apiCall('/roster/pitching');
-      data = res.data || res;
-    }
-
-    let html = '<div class="section">';
-    html += '<div class="section-header">26-Man Roster</div>';
-    html += `<div class="roster-tabs">
-      <button class="${view==='all'?'active':''}" onclick="rosterView='all';loadRoster(document.getElementById('tab-roster'),'all')">All</button>
-      <button class="${view==='batting'?'active':''}" onclick="rosterView='batting';loadRoster(document.getElementById('tab-roster'),'batting')">Batters</button>
-      <button class="${view==='pitching'?'active':''}" onclick="rosterView='pitching';loadRoster(document.getElementById('tab-roster'),'pitching')">Pitchers</button>
-    </div>`;
-
-    if (Array.isArray(data)) {
-      data.forEach(p => {
-        const name = p.name || p.Name || p.fullName || '';
-        const pos = p.position || p.Position || p.pos || '';
-        const num = p.jerseyNumber || p.number || p.jersey || '#';
-        const stat = p.avg || p.OPS || p.ERA || p.era || p.battingAvg || '';
-        const statLabel = view === 'pitching' ? 'ERA' : view === 'batting' ? 'OPS' : '';
-        html += `<div class="player-row" onclick="searchAndShow('${escAttr(name)}')">
-          <div class="player-num">${escHtml(String(num))}</div>
-          <div class="player-info">
-            <div class="player-name">${escHtml(name)}</div>
-            <div class="player-pos">${escHtml(pos)}${stat ? ' · '+statLabel+' '+stat : ''}</div>
-          </div>
-          <div class="player-stat">${stat || ''}</div>
-        </div>`;
+    if(view==='all'){data=(await api('/roster')).data}
+    else if(view==='batting'){data=(await api('/roster/batting')).data}
+    else{data=(await api('/roster/pitching')).data}
+    let h='<div class="card"><div class="card-head">26-Man Roster</div>';
+    h+='<div class="roster-filters">';
+    ['all','batting','pitching'].forEach(v=>{
+      const label={all:'All',batting:'Batters',pitching:'Pitchers'}[v];
+      h+='<button class="'+(view===v?'active':'')+'" onclick="rosterView=\''+v+'\';loadRoster(document.getElementById(\'tab-roster\'),\''+v+'\')">'+label+'</button>';
+    });
+    h+='</div>';
+    if(Array.isArray(data)){
+      data.forEach(p=>{
+        const name=p.fullName||p.name||p.Name||'';
+        const pos=p.position||p.Position||p.pos||'';
+        const num=p.jerseyNumber||p.number||p.jersey||'#';
+        let stat='';
+        if(view==='batting') stat=p.OPS||p.ops||p.avg||p.battingAvg||'';
+        if(view==='pitching') stat=p.ERA||p.era||'';
+        const statLabel=view==='pitching'?'ERA':view==='batting'?'OPS':'';
+        h+=`<div class="player-row" onclick="goPlayer('${escA(name)}')">
+          <div class="player-num">${esc(String(num))}</div>
+          <div class="player-info"><div class="player-name">${esc(name)}</div>
+          <div class="player-meta">${esc(pos)}${stat?' &middot; '+statLabel+' '+stat:''}</div></div>
+          <div class="player-stat">${stat||''}</div></div>`;
       });
-    } else if (typeof data === 'string') {
-      html += `<div class="section-body"><pre style="white-space:pre-wrap;font-size:13px">${escHtml(data)}</pre></div>`;
-    } else {
-      html += `<div class="section-body"><pre style="white-space:pre-wrap;font-size:13px">${escHtml(JSON.stringify(data,null,2))}</pre></div>`;
+    } else if(typeof data==='string'){
+      h+='<div class="card-body"><div class="text-report">'+esc(data)+'</div></div>';
     }
-    html += '</div>';
-    el.innerHTML = html;
-  } catch(e) {
-    showError(el, e.message);
-  }
+    h+='</div>';
+    el.innerHTML=h;
+  }catch(e){showErr(el,e.message)}
 }
 
-// ==================== PLAYER ====================
-function initPlayer(el) {
-  el.innerHTML = `<div class="section">
-    <div class="section-header">Player Search</div>
-    <div class="search-box">
-      <input class="search-input" id="player-input" placeholder="Enter player name or ID (e.g. Ohtani, Betts, Freeman...)" onkeydown="if(event.key==='Enter')searchPlayer()">
-    </div>
-    <div id="player-result"></div>
-  </div>`;
-  setTimeout(() => document.getElementById('player-input')?.focus(), 100);
+// ========== PLAYER ==========
+function initPlayer(el){
+  el.innerHTML='<div class="card"><div class="card-head">Player Search</div><div class="search-wrap"><input class="search-input" id="pi" placeholder="Name or MLB ID (e.g. Ohtani, Betts, Freeman...)" onkeydown="if(event.key===\'Enter\')doSearch()"></div><div id="pr"></div></div>';
+  setTimeout(()=>{const i=document.getElementById('pi');if(i)i.focus()},100);
 }
 
-async function searchPlayer() {
-  const input = document.getElementById('player-input');
-  const result = document.getElementById('player-result');
-  if (!input || !input.value.trim()) return;
-  const name = input.value.trim();
-
-  result.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-
-  try {
-    const res = await apiCall('/player/' + encodeURIComponent(name));
-    const profile = res.data || res;
-    result.innerHTML = renderProfile(profile);
-  } catch(e) {
-    result.innerHTML = `<div class="error">Player "${escHtml(name)}" not found.<br><small>Try full name like "Shohei Ohtani" or MLB ID</small></div>`;
-  }
+async function doSearch(){
+  const i=document.getElementById('pi'),r=document.getElementById('pr');
+  if(!i||!i.value.trim())return;
+  const name=i.value.trim();
+  r.innerHTML='<div class="loading" style="padding:24px"><div class="spinner"></div></div>';
+  try{
+    const res=await api('/player/'+encodeURIComponent(name));
+    const p=res.data||res;
+    r.innerHTML=renderProfile(p);
+  }catch(e){r.innerHTML='<div class="err">Player not found.<br><small>Try full name like "Shohei Ohtani"</small></div>'}
 }
 
-function searchAndShow(name) {
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+function goPlayer(name){
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
   document.querySelector('[data-tab="player"]').classList.add('active');
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  const tabEl = document.getElementById('tab-player');
-  tabEl.classList.add('active');
-  initPlayer(tabEl);
-  setTimeout(() => {
-    const input = document.getElementById('player-input');
-    if (input) { input.value = name; searchPlayer(); }
-  }, 50);
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  const el=document.getElementById('tab-player');el.classList.add('active');
+  curTab='player';
+  initPlayer(el);
+  setTimeout(()=>{const i=document.getElementById('pi');if(i){i.value=name;doSearch()}},80);
 }
 
-function renderProfile(p) {
-  if (!p || typeof p !== 'object') return '<div class="empty">No player data</div>';
+function renderProfile(p){
+  if(!p||typeof p!=='object') return '<div class="empty">No data</div>';
+  const name=p.fullName||p.name||p.Name||'Unknown';
+  const team=p.currentTeam||p.team||p.Team||'';
+  const pos=p.primaryPosition||p.position||p.Position||'';
+  const num=p.jerseyNumber||p.primaryNumber||p.number||'';
+  const bats=p.batSide||p.bats||'',throws=p.throwSide||p.throws||'';
+  const ht=p.height||'',wt=p.weight||'',age=p.age||p.currentAge||'';
+  const bd=p.birthDate||p.birth_date||p.dob||'';
+  const bc=p.birthCity||p.birth_city||'',bco=p.birthCountry||p.birth_country||'';
+  const debut=p.mlbDebut||p.debut||p.mlb_debut||'';
+  const draft=p.draftYear||p.draft_year||'';
 
-  const name = p.fullName || p.name || p.Name || 'Unknown';
-  const team = p.currentTeam || p.team || p.Team || '';
-  const pos = p.primaryPosition || p.position || p.Position || '';
-  const num = p.jerseyNumber || p.primaryNumber || p.number || '';
-  const bats = p.batSide || p.bats || '';
-  const throws = p.throwSide || p.throws || '';
-  const height = p.height || '';
-  const weight = p.weight || '';
-  const age = p.age || p.currentAge || '';
-  const birthDate = p.birthDate || p.birth_date || p.dob || '';
-  const birthCity = p.birthCity || p.birth_city || '';
-  const birthCountry = p.birthCountry || p.birth_country || '';
-  const mlbDebut = p.mlbDebut || p.debut || p.mlb_debut || '';
-  const draft = p.draftYear || p.draft_year || '';
+  let h=`<div class="card" style="overflow:visible"><div class="profile-hero"><div class="num">#${esc(String(num))}</div><div class="pname">${esc(name)}</div><div class="pteam">${esc(team)}${pos?' &middot; '+esc(pos):''}</div></div>`;
+  h+='<div class="profile-grid">';
 
-  let html = `<div class="section" style="position:relative;overflow:hidden">
-    <div class="profile-header">
-      <div class="number">#${escHtml(String(num))}</div>
-      <div class="name">${escHtml(name)}</div>
-      <div class="team">${escHtml(team)}${pos ? ' · ' + escHtml(pos) : ''}</div>
-    </div>
-    <div class="profile-grid">`;
+  const info=[['B/T',(bats||'-')+' / '+(throws||'-')],['HT/WT',(ht&&wt)?ht+' / '+wt+' lbs':'-'],['Age',age||'-'],['Born',bd+(bc?', '+bc:'')],['Country',bco||'-']];
+  if(debut)info.push(['MLB Debut',debut]);
+  if(draft)info.push(['Draft',String(draft)]);
+  info.forEach(([l,v])=>{h+='<div class="profile-cell"><div class="lbl">'+l+'</div><div class="val">'+esc(v)+'</div></div>'});
+  h+='</div>';
 
-  const infoItems = [
-    ['B/T', (bats ? escHtml(bats) : '-') + ' / ' + (throws ? escHtml(throws) : '-')],
-    ['Height', escHtml(height)],
-    ['Weight', escHtml(weight)],
-    ['Age', escHtml(String(age))],
-    ['Born', escHtml(birthDate) + (birthCity ? ', ' + escHtml(birthCity) : '')],
-    ['Country', escHtml(birthCountry)],
-  ];
-  if (mlbDebut) infoItems.push(['MLB Debut', escHtml(mlbDebut)]);
-  if (draft) infoItems.push(['Draft', escHtml(String(draft))]);
-
-  infoItems.forEach(([label, value]) => {
-    html += `<div class="profile-item"><div class="label">${label}</div><div class="value">${value}</div></div>`;
-  });
-  html += '</div>';
-
-  // Season stats
-  const season = p.seasonStats || p.season_stats || null;
-  if (season && typeof season === 'object') {
-    html += '<div class="section-body" style="padding:0"><div style="padding:10px 16px 6px;font-size:13px;font-weight:600;color:var(--gray-500)">2025 Season</div>';
-    html += '<div class="profile-stats">';
-    const stats = Object.entries(season).filter(([k]) => !['team','season','sport'].includes(k));
-    const displayStats = stats.slice(0, 6);
-    displayStats.forEach(([k, v]) => {
-      const label = k.replace(/([A-Z])/g, ' $1').trim();
-      html += `<div class="profile-stat"><div class="num">${escHtml(String(v ?? '-'))}</div><div class="tag">${escHtml(label)}</div></div>`;
+  const season=p.seasonStats||p.season_stats;
+  if(season&&typeof season==='object'&&Object.keys(season).length>0){
+    h+='<div style="border-top:1px solid var(--gray-200);padding:8px 16px 4px;font-size:11px;font-weight:600;color:var(--gray-500)">2025 Season</div>';
+    h+='<div class="profile-stats-bar">';
+    Object.entries(season).filter(([k])=>!['team','season','sport'].includes(k)).slice(0,6).forEach(([k,v])=>{
+      h+='<div class="profile-stat"><div class="n">'+esc(String(v??'-'))+'</div><div class="t">'+esc(k)+'</div></div>';
     });
-    html += '</div></div>';
+    h+='</div>';
   }
 
-  // Career stats summary
-  const career = p.careerStats || p.career || p.career_totals || null;
-  if (career && typeof career === 'object' && Object.keys(career).length > 0) {
-    html += '<div class="section-body" style="padding:0;border-top:1px solid var(--gray-100)"><div style="padding:10px 16px 6px;font-size:13px;font-weight:600;color:var(--gray-500)">Career</div>';
-    html += '<div class="profile-stats">';
-    const cStats = Object.entries(career).filter(([k]) => !['team','season','sport','split'].includes(k));
-    cStats.slice(0, 6).forEach(([k, v]) => {
-      const label = k.replace(/([A-Z])/g, ' $1').trim();
-      html += `<div class="profile-stat"><div class="num">${escHtml(String(v ?? '-'))}</div><div class="tag">${escHtml(label)}</div></div>`;
+  const career=p.careerStats||p.career||p.career_totals;
+  if(career&&typeof career==='object'&&Object.keys(career).length>0){
+    h+='<div style="border-top:1px solid var(--gray-200);padding:8px 16px 4px;font-size:11px;font-weight:600;color:var(--gray-500)">Career</div>';
+    h+='<div class="profile-stats-bar">';
+    Object.entries(career).filter(([k])=>!['team','season','sport','split'].includes(k)).slice(0,6).forEach(([k,v])=>{
+      h+='<div class="profile-stat"><div class="n">'+esc(String(v??'-'))+'</div><div class="t">'+esc(k)+'</div></div>';
     });
-    html += '</div></div>';
+    h+='</div>';
   }
+  h+='</div>';
 
-  html += '</div>';
-
-  // Year by year
-  const yby = p.yearByYear || p.year_by_year || null;
-  if (Array.isArray(yby) && yby.length > 0) {
-    html += '<div class="section"><div class="section-header">Year by Year</div>';
-    html += '<div class="card" style="padding:0;overflow-x:auto"><table class="standings-table"><thead><tr><th>Year</th><th>Team</th>';
-    const sampleKeys = Object.keys(yby[0]).filter(k => !['season','team','sport','teamName','teamNameShort','teamAbbrev'].includes(k));
-    sampleKeys.slice(0, 6).forEach(k => {
-      html += `<th>${escHtml(k.replace(/([A-Z])/g,' $1').trim())}</th>`;
+  const yby=p.yearByYear||p.year_by_year;
+  if(Array.isArray(yby)&&yby.length>0){
+    h+='<div class="card"><div class="card-head">Year by Year</div><div class="card-body" style="padding:0;overflow-x:auto"><table style="width:100%;font-size:12px;border-collapse:collapse"><thead><tr><th style="padding:6px 10px;font-size:11px;color:var(--gray-500);text-align:left">Year</th><th style="padding:6px 10px;font-size:11px;color:var(--gray-500);text-align:left">Team</th>';
+    const sk=Object.keys(yby[0]).filter(k=>!['season','team','sport','teamName','teamNameShort','teamAbbrev'].includes(k)).slice(0,7);
+    sk.forEach(k=>{h+='<th style="padding:6px 10px;font-size:11px;color:var(--gray-500);text-align:left">'+esc(k)+'</th>'});
+    h+='</tr></thead><tbody>';
+    yby.slice().reverse().forEach(r=>{
+      h+='<tr>';
+      h+='<td style="padding:6px 10px;border-top:1px solid var(--gray-100)">'+esc(String(r.season||'-'))+'</td>';
+      h+='<td style="padding:6px 10px;border-top:1px solid var(--gray-100)">'+esc(r.teamAbbrev||r.team||r.teamNameShort||'-')+'</td>';
+      sk.forEach(k=>{h+='<td style="padding:6px 10px;border-top:1px solid var(--gray-100)">'+esc(String(r[k]??'-'))+'</td>'});
+      h+='</tr>';
     });
-    html += '</tr></thead><tbody>';
-    yby.slice().reverse().forEach(row => {
-      html += '<tr>';
-      html += `<td>${escHtml(String(row.season || '-'))}</td>`;
-      html += `<td>${escHtml(row.teamAbbrev || row.team || row.teamNameShort || '-')}</td>`;
-      sampleKeys.slice(0, 6).forEach(k => {
-        html += `<td>${escHtml(String(row[k] ?? '-'))}</td>`;
+    h+='</tbody></table></div></div>';
+  }
+  return h;
+}
+
+// ========== SABERMETRICS ==========
+function initSaber(el){
+  el.innerHTML='<div class="card"><div class="card-head">Sabermetrics</div><div class="card-body">Loading team advanced analysis...</div></div>';
+  api('/report/advanced').then(res=>{
+    const d=res.data||res;
+    const rpt=d.report||d;
+    el.innerHTML='<div class="card"><div class="card-head">Advanced Analysis</div><div class="card-body"><div class="text-report">'+esc(typeof rpt==='string'?rpt:JSON.stringify(rpt,null,2))+'</div></div></div>';
+  }).catch(e=>{el.querySelector('.card-body').innerHTML='<div class="err">Failed to load</div>'});
+}
+
+// ========== NEWS ==========
+async function loadNews(el){
+  showLoad(el);
+  try{
+    const res=await api('/news?count=10');
+    const arts=res.data||res;
+    let h='<div class="card"><div class="card-head">Latest News</div>';
+    if(Array.isArray(arts)){
+      arts.forEach(a=>{
+        const title=a.title||a.Title||'';
+        const date=a.published||a.date||a.pubDate||a.Date||'';
+        const link=a.link||a.url||a.Link||'#';
+        const sum=a.summary||a.description||'';
+        h+=`<a href="${escA(link)}" target="_blank" rel="noopener" class="news-row"><div class="news-title">${esc(title)}</div>${sum?'<div class="news-date">'+esc(sum.substring(0,120))+(sum.length>120?'...':'')+'</div>':''}<div class="news-date">${esc(date)}</div></a>`;
       });
-      html += '</tr>';
-    });
-    html += '</tbody></table></div></div>';
-  }
-
-  return html;
-}
-
-// ==================== SABERMETRICS ====================
-function initSaber(el) {
-  el.innerHTML = `<div class="section">
-    <div class="section-header">Sabermetrics Advanced Analysis</div>
-    <div class="search-box">
-      <input class="search-input" id="saber-input" placeholder="Enter player name (e.g. Ohtani, Betts...)" onkeydown="if(event.key==='Enter')loadSaber()">
-    </div>
-    <div id="saber-result"></div>
-  </div>`;
-  setTimeout(() => document.getElementById('saber-input')?.focus(), 100);
-}
-
-async function loadSaber() {
-  const input = document.getElementById('saber-input');
-  const result = document.getElementById('saber-result');
-  if (!input || !input.value.trim()) return;
-  const name = input.value.trim();
-
-  result.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-
-  try {
-    const res = await apiCall('/report/advanced');
-    const data = res.data || res;
-    const report = data.report || data;
-    result.innerHTML = `<div class="section"><div class="section-header">Analysis Report</div>
-      <div class="section-body"><pre style="white-space:pre-wrap;font-size:13px;line-height:1.7">${escHtml(typeof report==='string'?report:JSON.stringify(report,null,2))}</pre></div>
-    </div>`;
-  } catch(e) {
-    // If per-player saber fails, try full report
-    try {
-      const res = await apiCall('/report/advanced');
-      const data = res.data || res;
-      const report = data.report || data;
-      result.innerHTML = `<div class="section"><div class="section-header">Full Team Analysis</div>
-        <div class="section-body"><pre style="white-space:pre-wrap;font-size:13px;line-height:1.7">${escHtml(typeof report==='string'?report:JSON.stringify(report,null,2))}</pre></div>
-      </div>`;
-    } catch(e2) {
-      result.innerHTML = `<div class="error">Failed to load analysis: ${escHtml(e2.message)}</div>`;
+    } else {
+      h+='<div class="card-body"><div class="text-report">'+esc(typeof arts==='string'?arts:JSON.stringify(arts,null,2))+'</div></div>';
     }
-  }
+    h+='</div>';
+    el.innerHTML=h;
+  }catch(e){showErr(el,e.message)}
 }
 
-// ==================== NEWS ====================
-async function loadNews(el) {
-  showLoading(el);
-  try {
-    const res = await apiCall('/news?count=10');
-    const articles = res.data || res;
-    let html = '<div class="section"><div class="section-header">Latest Dodgers News</div>';
-    if (Array.isArray(articles)) {
-      articles.forEach(a => {
-        const title = a.title || a.Title || '';
-        const date = a.date || a.published || a.pubDate || a.Date || '';
-        const link = a.link || a.url || a.Link || '#';
-        const summary = a.summary || a.description || a.Summary || '';
-        html += `<a href="${escAttr(link)}" target="_blank" class="news-item" style="text-decoration:none;color:inherit">
-          <div class="news-dot"></div>
-          <div class="news-content">
-            <div class="news-title">${escHtml(title)}</div>
-            ${summary ? `<div style="font-size:12px;color:var(--gray-500);margin-top:4px;line-height:1.4">${escHtml(summary.substring(0,100))}${summary.length>100?'...':''}</div>` : ''}
-            <div class="news-time">${escHtml(date)}</div>
-          </div>
-        </a>`;
-      });
-    } else if (typeof articles === 'string') {
-      html += `<div class="section-body"><pre style="white-space:pre-wrap;font-size:13px">${escHtml(articles)}</pre></div>`;
-    }
-    html += '</div>';
-    el.innerHTML = html;
-  } catch(e) {
-    showError(el, e.message);
-  }
-}
+function escA(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
-// ==================== UTILS ====================
-function escHtml(s) {
-  if (s == null) return '';
-  const div = document.createElement('div');
-  div.textContent = String(s);
-  return div.innerHTML;
-}
-function escAttr(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-// ==================== INIT ====================
 loadTab('today');
 </script>
 </body>

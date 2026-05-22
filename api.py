@@ -130,7 +130,7 @@ def standings():
     try:
         from dodgers_engine import get_standings, parse_dodgers_rank
         raw = get_standings()
-        dodgers_rank = parse_dodgers_rank(raw)
+        dodgers_rank = parse_dodgers_rank()
         return {
             "data": {
                 "standings": raw,
